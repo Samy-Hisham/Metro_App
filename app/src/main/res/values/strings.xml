@@ -1,0 +1,85 @@
+<resources>
+    <string name="app_name">Cairo Metro</string>
+    <string name="route">Route</string>
+
+    <string-array name="stations">
+        <item>please select</item>
+        <item>Abdou Pasha</item>
+        <item>Abbassia</item>
+        <item>Alf Maskan</item>
+        <item>Al-Ahram</item>
+        <item>Al-Bohy</item>
+        <item>Al-Geish</item>
+        <item>Al-Haykestep</item>
+        <item>Al-Marg</item>
+        <item>Al-Matareyya</item>
+        <item>Al-Nozha</item>
+        <item>Al-Qawmeya Al-Arabiya</item>
+        <item>Al-Sayyeda Zeinab</item>
+        <item>Al-Shohadaa</item>
+        <item>Ain Helwan</item>
+        <item>Ain Shams</item>
+        <item>Ahmed Galal</item>
+        <item>Attaba</item>
+        <item>Bab El Shaaria</item>
+        <item>Bulaq El-Dakroor</item>
+        <item>Cairo University</item>
+        <item>Dokki</item>
+        <item>Dar El-Salam</item>
+        <item>Ain El Helwan</item>
+        <item>Ezbet El-Nakhl</item>
+        <item>Faisal</item>
+        <item>Fair Zone</item>
+        <item>Gamaat El Dowal Al-Arabiya</item>
+        <item>Ghamra</item>
+        <item>Giza</item>
+        <item>Hadayeq El-Maadi</item>
+        <item>Hadayeq El-Zaitoun</item>
+        <item>Hadayeq Helwan</item>
+        <item>Hammamat El-Qobba</item>
+        <item>Haroun</item>
+        <item>Heliopolis Square</item>
+        <item>Helmeyet El-Zaitoun</item>
+        <item>Helwan</item>
+        <item>Helwan University</item>
+        <item>Hesham Barakat</item>
+        <item>Imbaba</item>
+        <item>Kit Kat</item>
+        <item>Koleyet El-Zeraa</item>
+        <item>Kobri El-Qobba</item>
+        <item>Kozzika</item>
+        <item>Maadi</item>
+        <item>Manshiet El-Sadr</item>
+        <item>Maspero</item>
+        <item>Massara</item>
+        <item>Mezallat</item>
+        <item>Naguib</item>
+        <item>Nadi El-Shams</item>
+        <item>Nasser</item>
+        <item>New El-Marg</item>
+        <item>Nozha</item>
+        <item>Omm El Misryeen</item>
+        <item>Opera</item>
+        <item>Orabi</item>
+        <item>Qobaa</item>
+        <item>Ring Road</item>
+        <item>Road El-Farag</item>
+        <item>Rod Al-Farag Axis</item>
+        <item>Sakiat Mekki</item>
+        <item>Sakanat El-Maadi</item>
+        <item>Saad Zaghloul</item>
+        <item>Sadat</item>
+        <item>Safaa Hegazy</item>
+        <item>Saray El-Qobba</item>
+        <item>St.Teresa </item>
+        <item>Teresa</item>
+        <item>Shobra El Kheima</item>
+        <item>Stadium</item>
+        <item>Sudan Street</item>
+        <item>Tora El-Asmant</item>
+        <item>Tora El-Balad</item>
+        <item>Wadi Hof</item>
+        <item>Wadi El-Nil</item>
+        <item>Zahraa</item>
+    </string-array>
+</resources>
