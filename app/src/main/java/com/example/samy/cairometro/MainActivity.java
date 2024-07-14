@@ -1,6 +1,7 @@
 package com.example.samy.cairometro;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -17,6 +18,10 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
+    SharedPreferences pref;
+    int posStart;
+    int posArrival;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +34,17 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        pref = getSharedPreferences("stations", MODE_PRIVATE);
+//        String start = pref.getString("start Station", "");
+//        String arrival = pref.getString("arrival Station", "");
+        posStart = pref.getInt("start pos", -1);
+        posArrival = pref.getInt("arrival pos", -1);
+
+        if (posStart != -1) {
+            binding.startStation.setSelection(posStart);
+            binding.arrivalStation.setSelection(posArrival);
+        }
+
     }
 
     public void getResult(View view) {
@@ -36,10 +52,12 @@ public class MainActivity extends AppCompatActivity {
         String startStation = binding.startStation.getSelectedItem().toString().toLowerCase();
         String arrivalStaion = binding.arrivalStation.getSelectedItem().toString().toLowerCase();
 
-//        int startIndex = binding.startStation.getSelectedItemPosition();
-//        binding.arrivalStation.removeViews(startIndex,1);
-
         validation(startStation, arrivalStaion);
+
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("start pos", binding.startStation.getSelectedItemPosition());
+        editor.putInt("arrival pos", binding.arrivalStation.getSelectedItemPosition());
+        editor.apply();
     }
 
     private void validation(String startStation, String arrivalStation) {
