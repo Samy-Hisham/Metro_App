@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         pref = getSharedPreferences("stations", MODE_PRIVATE);
-//        String start = pref.getString("start Station", "");
-//        String arrival = pref.getString("arrival Station", "");
+
+
         posStart = pref.getInt("start pos", -1);
         posArrival = pref.getInt("arrival pos", -1);
 
