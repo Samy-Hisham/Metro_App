@@ -4,82 +4,97 @@
 
     <string-array name="stations">
         <item>please select</item>
-        <item>Abdou Pasha</item>
-        <item>Abbassia</item>
-        <item>Alf Maskan</item>
-        <item>Al-Ahram</item>
-        <item>Al-Bohy</item>
+        <item>helwan</item>
+        <item>ainhelwan</item>
+        <item>helwan university</item>
+        <item>wadi hof</item>
+        <item>hadayeq helwan</item>
+        <item>el-maasara</item>
+        <item>tora el-asmant</item>
+        <item>kozzika</item>
+        <item>tora el-balad</item>
+        <item>sakanat el-maadi</item>
+        <item>maadi</item>
+        <item>hadayeq el-maadi</item>
+        <item>dar el-salam</item>
+        <item>el-zahraa</item>
+        <item>mar girgis</item>
+        <item>el-malek el-saleh</item>
+        <item>alSayyeda zeinab</item>
+        <item>saad zaghloul</item>
+        <item>sadat</item>
+        <item>nasser</item>
+        <item>orabi</item>
+        <item>al-shohadaa</item>
+        <item>ghamra</item>
+        <item>el-demerdash</item>
+        <item>manshiet el-sadr</item>
+        <item>kobri el-qobba</item>
+        <item>hammamat el-qobba</item>
+        <item>saray el-qobba</item>
+        <item>hadayeq el-zaitoun</item>
+        <item>helmeyet el-zaitoun</item>
+        <item>el-matareyya</item>
+        <item>ain shams</item>
+        <item>ezbet el-nakhl</item>
+        <item>el-marg</item>
+        <item>new el-marg</item>
+        <item>el mounib</item>
+        <item>sakiat mekki</item>
+        <item>omm el misryeen</item>
+        <item>giza</item>
+        <item>"faisal</item>
+        <item>cairo university</item>
+        <item>el-bohooth</item>
+        <item>dokki</item>
+        <item>opera</item>
+        <item>sadat</item>
+        <item>naguib</item>
+        <item>attaba</item>
+        <item>al-shohadaa</item>
+        <item>massara</item>
+        <item>road el-farag</item>
+        <item>st.teresa</item>
+        <item>khalafawy</item>
+        <item>mezallat</item>
+        <item>koliet el-zeraa</item>
+        <item>shobra el kheima</item>
+        <item>airport</item>
+        <item>ahmed galal</item>
+        <item>adly mansour</item>
+        <item>el haykestep</item>
+        <item>omar ibn el-khattab</item>
+        <item>qobaa</item>
+        <item>hesham barakat</item>
+        <item>el-nozha</item>
+        <item>nadi el-shams</item>
+        <item>alf maskan</item>
+        <item>heliopolis square</item>
+        <item>haroun</item>
+        <item>al-ahram</item>
+        <item>koleyet el-banat</item>
+        <item>stadium</item>
+        <item>fair zone</item>
+        <item>abbassia</item>
+        <item>abdou pasha</item>
         <item>el geish</item>
-        <item>Al-Haykestep</item>
-        <item>Al-Marg</item>
-        <item>Al-Matareyya</item>
-        <item>Al-Nozha</item>
-        <item>Al-Qawmeya Al-Arabiya</item>
-        <item>Al-Sayyeda Zeinab</item>
-        <item>Al-Shohadaa</item>
-        <item>Ain Helwan</item>
-        <item>Ain Shams</item>
-        <item>Ahmed Galal</item>
-        <item>Attaba</item>
-        <item>Bab El Shaaria</item>
-        <item>Bulaq El-Dakroor</item>
-        <item>Cairo University</item>
-        <item>Dokki</item>
-        <item>Dar El-Salam</item>
-        <item>Ain El Helwan</item>
-        <item>Ezbet El-Nakhl</item>
-        <item>Faisal</item>
-        <item>Fair Zone</item>
-        <item>Gamaat El Dowal Al-Arabiya</item>
-        <item>Ghamra</item>
-        <item>Giza</item>
-        <item>Hadayeq El-Maadi</item>
-        <item>Hadayeq El-Zaitoun</item>
-        <item>Hadayeq Helwan</item>
-        <item>Hammamat El-Qobba</item>
-        <item>Haroun</item>
-        <item>Heliopolis Square</item>
-        <item>Helmeyet El-Zaitoun</item>
-        <item>Helwan</item>
-        <item>Helwan University</item>
-        <item>Hesham Barakat</item>
-        <item>Imbaba</item>
-        <item>Kit Kat</item>
-        <item>Koleyet El-Zeraa</item>
-        <item>Kobri El-Qobba</item>
-        <item>Kozzika</item>
-        <item>Maadi</item>
-        <item>Manshiet El-Sadr</item>
-        <item>Maspero</item>
-        <item>Massara</item>
-        <item>Mezallat</item>
-        <item>Naguib</item>
-        <item>Nadi El-Shams</item>
-        <item>Nasser</item>
-        <item>New El-Marg</item>
-        <item>Nozha</item>
-        <item>Omm El Misryeen</item>
-        <item>Opera</item>
-        <item>Orabi</item>
-        <item>Qobaa</item>
-        <item>Ring Road</item>
-        <item>Road El-Farag</item>
-        <item>Rod Al-Farag Axis</item>
-        <item>Sakiat Mekki</item>
-        <item>Sakanat El-Maadi</item>
-        <item>Saad Zaghloul</item>
-        <item>Sadat</item>
-        <item>Safaa Hegazy</item>
-        <item>Saray El-Qobba</item>
-        <item>St.Teresa </item>
-        <item>Teresa</item>
-        <item>Shobra El Kheima</item>
-        <item>Stadium</item>
-        <item>Sudan Street</item>
-        <item>Tora El-Asmant</item>
-        <item>Tora El-Balad</item>
-        <item>Wadi Hof</item>
-        <item>Wadi El-Nil</item>
-        <item>Zahraa</item>
+        <item>bab el shaaria</item>
+        <item>attaba</item>
+        <item>nasser</item>
+        <item>maspero</item>
+        <item>safaa hegazy</item>
+        <item>kit kat</item>
+        <item>cairo university</item>
+        <item>bulaq el-dakroor</item>
+        <item>gamaat el dowal al-arabiya</item>
+        <item>wadi el-nil</item>
+        <item>el-tawfikeya</item>
+        <item>kit kat</item>
+        <item>sudan street</item>
+        <item>imbaba</item>
+        <item>el-bohy</item>
+        <item>al-qawmeya al-arabiya</item>
+        <item>ring road</item>
+        <item>rod al-farag axis</item>
     </string-array>
 </resources>

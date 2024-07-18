@@ -2,8 +2,11 @@ package com.example.samy.cairometro;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -17,9 +20,11 @@ import com.example.samy.cairometro.databinding.ActivityResultsBinding;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
-public class ResultsActivity extends AppCompatActivity {
+public class ResultsActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
     List<String> line1 = Arrays.asList("helwan", "ainhelwan", "helwan university", "wadi hof", "hadayeq helwan",
             "el-maasara", "tora el-asmant", "kozzika", "tora el-balad", "sakanat el-maadi", "maadi", "hadayeq el-maadi",
@@ -42,7 +47,9 @@ public class ResultsActivity extends AppCompatActivity {
 
     private ActivityResultsBinding binding;
     private ArrayList<String> emptyList = new ArrayList<>();
-
+    private boolean flag = true;
+    SharedPreferences pref;
+    TextToSpeech tts;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +62,10 @@ public class ResultsActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        pref = getSharedPreferences("save stations", MODE_PRIVATE);
+
+        tts = new TextToSpeech(this,this);
 
         Intent intent = getIntent();
 
@@ -86,12 +97,11 @@ public class ResultsActivity extends AppCompatActivity {
         else if (line1.contains(startStation) && line2.contains(arrivalStation)) {
 
             getFirstWay(line1, line2, startStation, arrivalStation,
-                    getIndex(line1, "al-shohadaa"), getIndex(line2, "al-shohadaa"), (byte) 1);
+                    getIndex(line1, "sadat"), getIndex(line2, "sadat"), (byte) 1);
 
-            //bug // route2 "elshohada" && ui
-            getSecWay(line1, line2, startStation, arrivalStation,
-                    getIndex(line1, "sadat"), getIndex(line2, "sadat"),
-                    emptyList, -1, -1, (byte) -1);
+            //bug // route2
+            getFirstWay(line1, line2, startStation, arrivalStation,
+                    getIndex(line1, "al-shohadaa"), getIndex(line2, "al-shohadaa"), (byte) -2);
 
         }
         else if (line1.contains(startStation) && line3.contains(arrivalStation)) {
@@ -99,7 +109,7 @@ public class ResultsActivity extends AppCompatActivity {
             getFirstWay(line1, line3, startStation, arrivalStation,
                     getIndex(line1, "nasser"), getIndex(line3, "nasser"), (byte) 1);
 
-            // buuuuuuug  // route2 && direction line3 && ui
+            // buuuuuuug  // route2 && direction line3
             getSecWay(line1, line3, startStation, arrivalStation, getIndex(line1, "sadat"),
                     getIndex(line3, "attaba"), line2, getIndex(line2, "sadat"),
                     getIndex(line2, "attaba"), (byte) -1);
@@ -119,15 +129,15 @@ public class ResultsActivity extends AppCompatActivity {
             getFirstWay(line2, line1, startStation, arrivalStation,
                     getIndex(line2, "al-shohadaa"), getIndex(line1, "al-shohadaa"), (byte) 1);
 
-            // ui
-            getSecWay(line2, line1, startStation, arrivalStation, getIndex(line2, "sadat"),
-                    getIndex(line1, "sadat"),
-                    emptyList, -1, -1, (byte) -1);
+            getFirstWay(line2, line1, startStation, arrivalStation,
+                    getIndex(line2, "sadat"), getIndex(line1, "sadat"), (byte) -2);
+
+
         }
         else if (line2.contains(startStation) && line3.contains(arrivalStation)) {
             getFirstWay(line2, line3, startStation, arrivalStation,
                     getIndex(line2, "attaba"), getIndex(line3, "attaba"), (byte) 1);
-            // route  // ui
+            // route
             getSecWay(line2, line3, startStation, arrivalStation, getIndex(line2, "sadat"),
                     getIndex(line3, "nasser"),
                     line1, getIndex(line1, "sadat"), getIndex(line1, "nasser"), (byte) -1);
@@ -137,12 +147,10 @@ public class ResultsActivity extends AppCompatActivity {
                     getIndex(line2, "cairo university"),
                     getIndex(branchLine3, "cairo university"), (byte) 1);
 
-            //bug ui
             getSecWay(line2, branchLine3, startStation, arrivalStation, getIndex(line2, "attaba"),
                     getIndex(branchLine3, "kit kat"),
                     line3, getIndex(line3, "attaba"), getIndex(line3, "kit kat"), (byte) -1);
         }
-
         // line3
         else if (line3.contains(startStation) && line1.contains(arrivalStation)) {
             getFirstWay(line3, line1, startStation, arrivalStation,
@@ -153,7 +161,7 @@ public class ResultsActivity extends AppCompatActivity {
                     line2, getIndex(line2, "attaba"), getIndex(line2, "al-shohadaa"), (byte) -1);
         }
 
-        //3 cases ui
+        //3 cases
         else if (line3.contains(startStation) && line2.contains(arrivalStation)) {
             getFirstWay(line3, line2, startStation, arrivalStation,
                     getIndex(line3, "attaba"), getIndex(line2, "attaba"), (byte) 1);
@@ -165,9 +173,9 @@ public class ResultsActivity extends AppCompatActivity {
 
         // 3 cases
         else if (line3.contains(startStation) && branchLine3.contains(arrivalStation)) {
-            getFirstWay(line3 ,branchLine3, startStation, arrivalStation,
+            getFirstWay(line3, branchLine3, startStation, arrivalStation,
                     getIndex(line3, "kit kat"), getIndex(branchLine3, "kit kat"), (byte) 1);
-            //ui
+
             getSecWay(line3, branchLine3, startStation, arrivalStation, getIndex(line3, "attaba"),
                     getIndex(branchLine3, "cairo university"),
                     line2, getIndex(line2, "attaba"), getIndex(line2, "cairo university"), (byte) -1);
@@ -178,7 +186,7 @@ public class ResultsActivity extends AppCompatActivity {
             getSecWay(branchLine3, line1, startStation, arrivalStation, getIndex(branchLine3, "kit kat"),
                     getIndex(line1, "nasser"),
                     line3, getIndex(line3, "kit kat"), getIndex(line3, "nasser"), (byte) 1);
-            //ui
+
             getSecWay(branchLine3, line1, startStation, arrivalStation, getIndex(branchLine3, "cairo university"),
                     getIndex(line1, "sadat"),
                     line2, getIndex(line2, "cairo university"), getIndex(line2, "sadat"), (byte) -1);
@@ -186,7 +194,7 @@ public class ResultsActivity extends AppCompatActivity {
         else if (branchLine3.contains(startStation) && line2.contains(arrivalStation)) {
             getFirstWay(branchLine3, line2, startStation, arrivalStation,
                     getIndex(branchLine3, "cairo university"), getIndex(line2, "cairo university"), (byte) 1);
-            // ui
+
             getSecWay(branchLine3, line2, startStation, arrivalStation, getIndex(branchLine3, "kit kat"),
                     getIndex(line2, "attaba"),
                     line3, getIndex(line3, "kit kat"), getIndex(line3, "attaba"), (byte) -1);
@@ -200,8 +208,10 @@ public class ResultsActivity extends AppCompatActivity {
             getSecWay(branchLine3, line3, startStation, arrivalStation, getIndex(branchLine3, "cairo university"),
                     getIndex(line3, "attaba"),
                     line2, getIndex(line2, "cairo university"), getIndex(line2, "attaba"), (byte) -1);
+
         }
     }
+
 
     @SuppressLint("SetTextI18n")
     public void sameLine(List<String> line, String start, String end) {
@@ -224,10 +234,9 @@ public class ResultsActivity extends AppCompatActivity {
         calcTimeAndCost(route, emptyList, (byte) 1);
     }
 
-
     @SuppressLint("SetTextI18n")
     public void getFirstWay(List<String> startLine, List<String> arrivalLine, String start, String end, byte
-            indexOfSwitchedStation1, byte indexOfSwitchedStation2, byte statusView) {
+            indexOfSwitchedStation1, byte indexOfSwitchedStation2, byte statusView)  {
         byte startIndex = (byte) startLine.indexOf(start);
         byte stage1 = (byte) (startIndex - indexOfSwitchedStation1);
 
@@ -245,34 +254,74 @@ public class ResultsActivity extends AppCompatActivity {
         String reversSecDirection = arrivalLine.get(0).toUpperCase();
         String nameSwitchStation = startLine.get(indexOfSwitchedStation1);
 
-        if (stage1 < 0) {
-            binding.direction.setText(" Direction: " + firstDirection);
-            binding.route.setText(startLine.subList(startIndex, indexOfSwitchedStation1 + 1).toString());
+        if (statusView == 1) {
+            if (stage1 < 0) {
+                binding.direction.setText(" Direction: " + firstDirection);
+                subList = startLine.subList(startIndex, indexOfSwitchedStation1 + 1);
+                binding.route.setText(subList.toString());
 
-        } else {
-            binding.direction.setText(" Direction: " + reversFirstDirection);
-            subList = startLine.subList(indexOfSwitchedStation1, startIndex + 1);
-            Collections.reverse(subList);
-            binding.route.setText(subList.toString());
+            } else {
+                binding.direction.setText(" Direction: " + reversFirstDirection);
+                subList = startLine.subList(indexOfSwitchedStation1, startIndex + 1);
+                Collections.reverse(subList);
+                binding.route.setText(subList.toString());
+            }
+            if (stage3 < 0) {
+
+                showViews(statusView); //0
+                binding.switchStation.setText("Then you switch at " + nameSwitchStation + " station");
+                speak(nameSwitchStation);
+                transitionsStations.add(nameSwitchStation);
+                binding.secDirection.setText("And Take : " + secDirection + " Direction");
+                subList = arrivalLine.subList(indexOfSwitchedStation2, arrivalIndex + 1);
+                binding.secRoute.setText(subList.toString());
+
+            } else {
+
+                showViews(statusView); //0
+                binding.switchStation.setText("Then you switch at " + nameSwitchStation + " station");
+                speak(nameSwitchStation);
+                transitionsStations.add(nameSwitchStation);
+                binding.secDirection.setText("And Take : " + reversSecDirection + " Direction");
+                subList = arrivalLine.subList(arrivalIndex, indexOfSwitchedStation2 + 1);
+                Collections.reverse(subList);
+                binding.secRoute.setText(subList.toString());
+            }
         }
-        if (stage3 < 0) {
+        else if (statusView == -2) {
+            showViews((byte) -2);
+            if (stage1 < 0) {
+                binding.direction2.setText(" Direction: " + firstDirection);
+                subList = startLine.subList(startIndex, indexOfSwitchedStation1 + 1);
+                binding.route2.setText(subList.toString());
 
-            showViews(statusView); //0
-            binding.switchStation.setText("Then you switch at " + nameSwitchStation + " station");
-            transitionsStations.add(nameSwitchStation);
-            binding.secDirection.setText("And Take : " + secDirection + " Direction");
-            subList = arrivalLine.subList(indexOfSwitchedStation2, arrivalIndex + 1);
-            binding.secRoute.setText(subList.toString());
+            } else {
+                binding.direction2.setText(" Direction: " + reversFirstDirection);
+                subList = startLine.subList(indexOfSwitchedStation1, startIndex + 1);
+                Collections.reverse(subList);
+                binding.route2.setText(subList.toString());
+            }
+            if (stage3 < 0) {
 
-        } else {
+                showViews(statusView);
+                binding.switchStation2.setText("Then you switch at " + nameSwitchStation + " station");
+                speak(nameSwitchStation);
+                transitionsStations.add(nameSwitchStation);
+                binding.secDirection2.setText("And Take : " + secDirection + " Direction");
+                subList = arrivalLine.subList(indexOfSwitchedStation2, arrivalIndex + 1);
+                binding.secRoute2.setText(subList.toString());
 
-            showViews(statusView); //0
-            binding.switchStation.setText("Then you switch at " + nameSwitchStation + " station");
-            transitionsStations.add(nameSwitchStation);
-            binding.secDirection.setText("And Take : " + reversSecDirection + " Direction");
-            subList = arrivalLine.subList(arrivalIndex, indexOfSwitchedStation2 + 1);
-            Collections.reverse(subList);
-            binding.secRoute.setText(subList.toString());
+            } else {
+
+                showViews(statusView);
+                binding.switchStation2.setText("Then you switch at " + nameSwitchStation + " station");
+                speak(nameSwitchStation);
+                transitionsStations.add(nameSwitchStation);
+                binding.secDirection2.setText("And Take : " + reversSecDirection + " Direction");
+                subList = arrivalLine.subList(arrivalIndex, indexOfSwitchedStation2 + 1);
+                Collections.reverse(subList);
+                binding.secRoute2.setText(subList.toString());
+            }
         }
         calcTimeAndCost(route1, transitionsStations, statusView);
     }
@@ -289,6 +338,7 @@ public class ResultsActivity extends AppCompatActivity {
 
         byte route2 = (byte) (Math.abs(stage2) + Math.abs(stage4));
 
+
         String firstDirection = startLine.get(startLine.size() - 1).toUpperCase();
         String reversFirstDirection = startLine.get(0).toUpperCase();
         String secDirection = arrivalLine.get(arrivalLine.size() - 1).toUpperCase();
@@ -300,55 +350,46 @@ public class ResultsActivity extends AppCompatActivity {
         ArrayList<String> transitionsStations = new ArrayList<>();
 
         if (statusView == -1) {
-            showViews((byte) -2);
+            showViews((byte) -1);
             if (stage2 < 0) {
-//                binding.direction2.setVisibility(View.VISIBLE);
                 binding.direction2.setText(" Direction: " + firstDirection);
-//                binding.route2.setVisibility(View.VISIBLE);
                 binding.route2.setText(startLine.subList(startIndex, indexOfSwitchedStation1 + 1).toString());
             } else {
-//                binding.direction2.setVisibility(View.VISIBLE);
                 binding.direction2.setText(" Direction: " + reversFirstDirection);
+                //make start index +2 
                 subList = startLine.subList(indexOfSwitchedStation1, startIndex + 1);
                 Collections.reverse(subList);
-//                binding.route2.setVisibility(View.VISIBLE);
                 binding.route2.setText(subList.toString());
             }
             if (stage4 < 0) {
-//                binding.switchStation2.setVisibility(View.VISIBLE);
                 binding.switchStation2.setText("Then you switch at " + nameSwitchStation + " station");
+                speak(nameSwitchStation);
                 transitionsStations.add(nameSwitchStation);
 
                 if (indexOfLinkedStation1 != -1) {
                     getRouteLink(lineLink, (byte) indexOfLinkedStation1, (byte) indexOfLinkedStation2, transitionsStations, statusView);
                     route2 += numOfLink;
-                    showViews(statusView);//1
                 }
-//                binding.secDirection2.setVisibility(View.VISIBLE);
+                binding.secDirection2.setVisibility(View.VISIBLE);
                 binding.secDirection2.setText("And Take : " + secDirection.toLowerCase() + " Direction");
                 subList = arrivalLine.subList(indexOfSwitchedStation2, arrivalIndex + 1);
-//                binding.secRoute2.setVisibility(View.VISIBLE);
                 binding.secRoute2.setText(subList.toString());
             } else {
-//                binding.switchStation2.setVisibility(View.VISIBLE);
                 binding.switchStation2.setText("Then you switch at " + nameSwitchStation + " station");
+                speak(nameSwitchStation);
                 transitionsStations.add(nameSwitchStation);
 
                 if (indexOfLinkedStation1 != -1) {
                     getRouteLink(lineLink, (byte) indexOfLinkedStation1, (byte) indexOfLinkedStation2, transitionsStations, statusView);
                     route2 += numOfLink;
-                    showViews(statusView);//1
                 }
-//                binding.secDirection2.setVisibility(View.VISIBLE);
                 binding.secDirection2.setText("And Take : " + reversSecDirection + " Direction");
                 subList = arrivalLine.subList(arrivalIndex, indexOfSwitchedStation2 + 1);
                 Collections.reverse(subList);
-//                binding.secRoute2.setVisibility(View.VISIBLE);
                 binding.secRoute2.setText(subList.toString());
             }
         }
         else {
-
             if (stage2 < 0) {
                 binding.direction.setText(" Direction: " + firstDirection);
                 binding.route.setText(startLine.subList(startIndex, indexOfSwitchedStation1 + 1).toString());
@@ -360,6 +401,7 @@ public class ResultsActivity extends AppCompatActivity {
             }
             if (stage4 < 0) {
                 binding.switchStation.setText("Then you switch at " + nameSwitchStation + " station");
+                speak(nameSwitchStation);
                 transitionsStations.add(nameSwitchStation);
 
                 if (indexOfLinkedStation1 != -1) {
@@ -372,6 +414,7 @@ public class ResultsActivity extends AppCompatActivity {
                 binding.secRoute.setText(subList.toString());
             } else {
                 binding.switchStation.setText("Then you switch at " + nameSwitchStation + " station");
+                speak(nameSwitchStation);
                 transitionsStations.add(nameSwitchStation);
 
                 if (indexOfLinkedStation1 != -1) {
@@ -476,7 +519,8 @@ public class ResultsActivity extends AppCompatActivity {
             } else if (totalStations <= 39) {
                 binding.cost.setText("Ticket= " + 15 + " EGP");
             }
-        } else {
+        }
+        else {
 
             //num of station
             binding.numStations2.setVisibility(View.VISIBLE);
@@ -512,30 +556,26 @@ public class ResultsActivity extends AppCompatActivity {
 
     private void showViews(byte statusView) {
 
-        if (statusView == 0) {
+        if (statusView == 1) {
             binding.switchStation.setVisibility(View.VISIBLE);
             binding.secDirection.setVisibility(View.VISIBLE);
             binding.secRoute.setVisibility(View.VISIBLE);
-        } else if (statusView == 1) {
-            binding.switchStation.setVisibility(View.VISIBLE);
-            binding.secDirection.setVisibility(View.VISIBLE);
-            binding.secRoute.setVisibility(View.VISIBLE);
-            binding.linkDirection.setVisibility(View.VISIBLE);
-            binding.linkRout.setVisibility(View.VISIBLE);
-            binding.linkSwitch.setVisibility(View.VISIBLE);
         } else if (statusView == -1) {
             binding.direction2.setVisibility(View.VISIBLE);
             binding.route2.setVisibility(View.VISIBLE);
-            binding.numStations2.setVisibility(View.VISIBLE);
+            binding.switchStation2.setVisibility(View.VISIBLE);
+
             binding.linkDirection2.setVisibility(View.VISIBLE);
             binding.linkRout2.setVisibility(View.VISIBLE);
             binding.linkSwitch2.setVisibility(View.VISIBLE);
+
             binding.secDirection2.setVisibility(View.VISIBLE);
             binding.secRoute2.setVisibility(View.VISIBLE);
-        }else if (statusView== -2){
+
+        } else if (statusView == -2) {
             binding.direction2.setVisibility(View.VISIBLE);
             binding.route2.setVisibility(View.VISIBLE);
-            binding.numStations2.setVisibility(View.VISIBLE);
+            binding.switchStation2.setVisibility(View.VISIBLE);
             binding.secDirection2.setVisibility(View.VISIBLE);
             binding.secRoute2.setVisibility(View.VISIBLE);
         }
@@ -544,7 +584,16 @@ public class ResultsActivity extends AppCompatActivity {
     private byte getIndex(List<String> line, String station) {
         return (byte) line.indexOf(station);
     }
+
+    private void speak(String switchedStation){
+        tts.speak(switchedStation,TextToSpeech.QUEUE_FLUSH,null,null);
+    }
+    @Override
+    public void onInit(int i) {
+
+    }
 }
 
 // compare between routes
 //transitions Stations
+//cost

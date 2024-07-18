@@ -1,5 +1,6 @@
 package com.example.samy.cairometro;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,9 +20,10 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
 
     SharedPreferences pref;
-    int posStart;
-    int posArrival;
+    int posStart, posArrival;
+    String startStation, arrivalStation;
 
+    @SuppressLint("CommitPrefEdits")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,23 +38,29 @@ public class MainActivity extends AppCompatActivity {
 
         pref = getSharedPreferences("stations", MODE_PRIVATE);
 
+        posStart = pref.getInt("start pos", 0);
+        posArrival = pref.getInt("arrival pos", 0);
 
-        posStart = pref.getInt("start pos", -1);
-        posArrival = pref.getInt("arrival pos", -1);
-
-        if (posStart != -1) {
-            binding.startStation.setSelection(posStart);
-            binding.arrivalStation.setSelection(posArrival);
+        if (posStart != 0) {
+//            binding.startStation.setSelection(posStart);
+//            binding.arrivalStation.setSelection(posArrival);
+            startStation = binding.startStation.getItemAtPosition(posStart).toString();
+            arrivalStation = binding.arrivalStation.getItemAtPosition(posArrival).toString();
+            Intent intent = new Intent(this, ResultsActivity.class);
+            intent.putExtra("startStation", startStation);
+            intent.putExtra("arrivalStation", arrivalStation);
+            startActivity(intent);
+        } else {
+            pref.edit().clear();
         }
-
     }
 
     public void getResult(View view) {
 
-        String startStation = binding.startStation.getSelectedItem().toString().toLowerCase();
-        String arrivalStaion = binding.arrivalStation.getSelectedItem().toString().toLowerCase();
+        startStation = binding.startStation.getSelectedItem().toString().toLowerCase();
+        arrivalStation = binding.arrivalStation.getSelectedItem().toString().toLowerCase();
 
-        validation(startStation, arrivalStaion);
+        validation(startStation, arrivalStation);
 
         SharedPreferences.Editor editor = pref.edit();
         editor.putInt("start pos", binding.startStation.getSelectedItemPosition());
@@ -77,5 +85,23 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("arrivalStation", arrivalStation);
             startActivity(intent);
         }
+    }
+
+    public void clearData(View view) {
+
+        posStart = 0;
+        posArrival = 0;
+
+        startStation = "";
+        arrivalStation = "";
+        binding.startStation.setSelection(0);
+        binding.arrivalStation.setSelection(0);
+    }
+
+    public void change(View view) {
+
+        byte temp = (byte) binding.startStation.getSelectedItemPosition();
+        binding.startStation.setSelection(binding.arrivalStation.getSelectedItemPosition());
+        binding.arrivalStation.setSelection(temp);
     }
 }
