@@ -48,7 +48,7 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
     private ActivityResultsBinding binding;
     private ArrayList<String> emptyList = new ArrayList<>();
     private boolean flag = true;
-    SharedPreferences pref;
+//    SharedPreferences pref;
     TextToSpeech tts;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,7 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
             return insets;
         });
 
-        pref = getSharedPreferences("save stations", MODE_PRIVATE);
+//        pref = getSharedPreferences("save stations", MODE_PRIVATE);
 
         tts = new TextToSpeech(this,this);
 
@@ -591,6 +591,13 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
     @Override
     public void onInit(int i) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent= new Intent(this, MainActivity.class);
+        startActivity(intent);
+        super.onBackPressed();
     }
 }
 

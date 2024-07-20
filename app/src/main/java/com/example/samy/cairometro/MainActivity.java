@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,15 +12,18 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.samy.cairometro.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
-    SharedPreferences pref;
+    SharedPreferences.Editor editor;
     int posStart, posArrival;
     String startStation, arrivalStation;
+    SharedPreferencesHelper pref;
 
     @SuppressLint("CommitPrefEdits")
     @Override
@@ -36,23 +38,28 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        pref = getSharedPreferences("stations", MODE_PRIVATE);
+        if (pref == null) {
+            pref = SharedPreferencesHelper.getInstance(this);
+        }
 
-        posStart = pref.getInt("start pos", 0);
-        posArrival = pref.getInt("arrival pos", 0);
+        posStart = pref.getStartPos("pos start", (byte) 0);
+        posArrival = pref.getArrivalPos("pos arrival", (byte) 0);
 
         if (posStart != 0) {
-//            binding.startStation.setSelection(posStart);
-//            binding.arrivalStation.setSelection(posArrival);
+
             startStation = binding.startStation.getItemAtPosition(posStart).toString();
             arrivalStation = binding.arrivalStation.getItemAtPosition(posArrival).toString();
-            Intent intent = new Intent(this, ResultsActivity.class);
-            intent.putExtra("startStation", startStation);
-            intent.putExtra("arrivalStation", arrivalStation);
-            startActivity(intent);
-        } else {
-            pref.edit().clear();
+
+            binding.startStation.setSelection(posStart);
+            binding.arrivalStation.setSelection(posArrival);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        posStart = pref.getStartPos("pos start", (byte) 0);
+        posArrival = pref.getArrivalPos("pos arrival", (byte) 0);
     }
 
     public void getResult(View view) {
@@ -62,21 +69,21 @@ public class MainActivity extends AppCompatActivity {
 
         validation(startStation, arrivalStation);
 
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putInt("start pos", binding.startStation.getSelectedItemPosition());
-        editor.putInt("arrival pos", binding.arrivalStation.getSelectedItemPosition());
-        editor.apply();
+        pref.setStartPos("pos start", (byte) binding.startStation.getSelectedItemPosition());
+        pref.setArrivalPos("pos arrival", (byte) binding.arrivalStation.getSelectedItemPosition());
+        pref.setStartStation("start",startStation);
+        pref.setArrivalStation("arrival",arrivalStation);
     }
 
     private void validation(String startStation, String arrivalStation) {
 
         if (startStation.equals("please select") || arrivalStation.equals("please select")) {
 
-            Toast.makeText(this, "please select station", Toast.LENGTH_SHORT).show();
+            YoYo.with(Techniques.Shake).duration(500).playOn(binding.resultBtn);
 
         } else if (arrivalStation.equals(startStation)) {
 
-            Toast.makeText(this, "please select another station", Toast.LENGTH_SHORT).show();
+            YoYo.with(Techniques.Shake).duration(500).playOn(binding.resultBtn);
 
         } else {
 
@@ -89,19 +96,33 @@ public class MainActivity extends AppCompatActivity {
 
     public void clearData(View view) {
 
-        posStart = 0;
-        posArrival = 0;
+        if (posStart ==0 || posArrival ==0){
+            YoYo.with(Techniques.Shake).duration(500).playOn(binding.clearBtn);
+        }else {
+            posStart = 0;
+            posArrival = 0;
 
-        startStation = "";
-        arrivalStation = "";
-        binding.startStation.setSelection(0);
-        binding.arrivalStation.setSelection(0);
+            binding.startStation.setSelection(0);
+            binding.arrivalStation.setSelection(0);
+
+            pref.clear();
+        }
     }
 
     public void change(View view) {
 
-        byte temp = (byte) binding.startStation.getSelectedItemPosition();
-        binding.startStation.setSelection(binding.arrivalStation.getSelectedItemPosition());
-        binding.arrivalStation.setSelection(temp);
+        if (binding.startStation.getSelectedItemPosition() == 0 || binding.arrivalStation.getSelectedItemPosition() == 0) {
+            YoYo.with(Techniques.Shake).duration(500).playOn(binding.changeBtn);
+        } else {
+            byte temp = (byte) binding.startStation.getSelectedItemPosition();
+            binding.startStation.setSelection(binding.arrivalStation.getSelectedItemPosition());
+            binding.arrivalStation.setSelection(temp);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+        super.onBackPressed();
     }
 }
