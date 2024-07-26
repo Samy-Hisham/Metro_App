@@ -2,11 +2,9 @@ package com.example.samy.cairometro;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -20,9 +18,7 @@ import com.example.samy.cairometro.databinding.ActivityResultsBinding;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public class ResultsActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
@@ -36,7 +32,8 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
             "cairo university", "el-bohooth", "dokki", "opera", "sadat", "naguib", "attaba", "al-shohadaa", "massara",
             "road el-farag", "st.teresa", "khalafawy", "mezallat", "koliet el-zeraa", "shobra el kheima");
 
-    List<String> line3 = Arrays.asList("airport", "ahmed galal", "adly mansour", "el haykestep", "omar ibn el-khattab",
+    //"airport", "ahmed galal",  this stations under construction
+    List<String> line3 = Arrays.asList("adly mansour", "el haykestep", "omar ibn el-khattab",
             "qobaa", "hesham barakat", "el-nozha", "nadi el-shams", "alf maskan", "heliopolis square", "haroun",
             "al-ahram ", "koleyet el-banat ", "stadium", "fair zone", "abbassia", "abdou pasha",
             "el geish", "bab el shaaria ", "attaba", "nasser", "maspero", "safaa hegazy", "kit kat");
@@ -46,10 +43,10 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
             , "ring road", "rod al-farag axis");
 
     private ActivityResultsBinding binding;
-    private ArrayList<String> emptyList = new ArrayList<>();
-    private boolean flag = true;
-//    SharedPreferences pref;
+    private final ArrayList<String> emptyList = new ArrayList<>();
+    List<String> testList= new ArrayList<>();
     TextToSpeech tts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,8 +60,6 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
             return insets;
         });
 
-//        pref = getSharedPreferences("save stations", MODE_PRIVATE);
-
         tts = new TextToSpeech(this,this);
 
         Intent intent = getIntent();
@@ -75,56 +70,65 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
         if (startStation == null || arrivalStation == null) {
             Toast.makeText(this, "try again", Toast.LENGTH_SHORT).show();
         } else {
-            getData(startStation, arrivalStation);
+            getFirstLine(startStation, arrivalStation);
         }
     }
 
-    private void getData(String startStation, String arrivalStation) {
+    private void getFirstLine(String startStation, String arrivalStation) {
 
-        if (line1.contains(startStation) && line1.contains(arrivalStation)) {
-            sameLine(line1, startStation, arrivalStation);
+        if (line1.contains(startStation)) {
+            getLine1(startStation,arrivalStation);
 
-        } else if (line2.contains(startStation) && line2.contains(arrivalStation)) {
-            sameLine(line2, startStation, arrivalStation);
+        } else if (line2.contains(startStation)) {
+            getLine2(startStation,arrivalStation);
 
-        } else if (line3.contains(startStation) && line3.contains(arrivalStation)) {
-            sameLine(line3, startStation, arrivalStation);
+        } else if (line3.contains(startStation)) {
+            getLine3(startStation, arrivalStation);
 
-        } else if (branchLine3.contains(startStation) && branchLine3.contains(arrivalStation)) {
-            sameLine(branchLine3, startStation, arrivalStation);
+        } else if (branchLine3.contains(startStation)) {
+            getBranchLine3(startStation, arrivalStation);
         }
-        // line1
-        else if (line1.contains(startStation) && line2.contains(arrivalStation)) {
+    }
+
+    // line1
+    private void getLine1(String startStation,String arrivalStation) {
+        if (line1.contains(arrivalStation)){
+            sameLine(line1, startStation, arrivalStation);
+        }
+        else if (line2.contains(arrivalStation)) {
 
             getFirstWay(line1, line2, startStation, arrivalStation,
                     getIndex(line1, "sadat"), getIndex(line2, "sadat"), (byte) 1);
 
-            //bug // route2
             getFirstWay(line1, line2, startStation, arrivalStation,
                     getIndex(line1, "al-shohadaa"), getIndex(line2, "al-shohadaa"), (byte) -2);
 
         }
-        else if (line1.contains(startStation) && line3.contains(arrivalStation)) {
+        else if (line3.contains(arrivalStation)) {
 
             getFirstWay(line1, line3, startStation, arrivalStation,
                     getIndex(line1, "nasser"), getIndex(line3, "nasser"), (byte) 1);
 
-            // buuuuuuug  // route2 && direction line3
             getSecWay(line1, line3, startStation, arrivalStation, getIndex(line1, "sadat"),
                     getIndex(line3, "attaba"), line2, getIndex(line2, "sadat"),
                     getIndex(line2, "attaba"), (byte) -1);
         }
-        else if (line1.contains(startStation) && branchLine3.contains(arrivalStation)) {
+        else if (branchLine3.contains(arrivalStation)) {
+
             getSecWay(line1, branchLine3, startStation, arrivalStation, getIndex(line1, "nasser"),
                     getIndex(branchLine3, "kit kat"),
-                    line3, getIndex(line3, "nasser"), getIndex(line3, "kit kat"), (byte) 1);
+                    line3, getIndex(line3, "nasser"), getIndex(line3, "kit kat"), (byte) 0);
 
-            //bug // route2
             getSecWay(line1, branchLine3, startStation, arrivalStation, getIndex(line1, "sadat"),
                     getIndex(branchLine3, "cairo university"),
                     line2, getIndex(line2, "sadat"), getIndex(line2, "cairo university"), (byte) -1);
         }
-        //line2
+    }
+    //line2
+    private void getLine2(String startStation,String arrivalStation) {
+        if (line2.contains(arrivalStation)){
+            sameLine(line2, startStation, arrivalStation);
+        }
         else if (line2.contains(startStation) && line1.contains(arrivalStation)) {
             getFirstWay(line2, line1, startStation, arrivalStation,
                     getIndex(line2, "al-shohadaa"), getIndex(line1, "al-shohadaa"), (byte) 1);
@@ -137,7 +141,7 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
         else if (line2.contains(startStation) && line3.contains(arrivalStation)) {
             getFirstWay(line2, line3, startStation, arrivalStation,
                     getIndex(line2, "attaba"), getIndex(line3, "attaba"), (byte) 1);
-            // route
+
             getSecWay(line2, line3, startStation, arrivalStation, getIndex(line2, "sadat"),
                     getIndex(line3, "nasser"),
                     line1, getIndex(line1, "sadat"), getIndex(line1, "nasser"), (byte) -1);
@@ -151,7 +155,12 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
                     getIndex(branchLine3, "kit kat"),
                     line3, getIndex(line3, "attaba"), getIndex(line3, "kit kat"), (byte) -1);
         }
-        // line3
+    }
+    // line3
+    private void getLine3(String startStation,String arrivalStation){
+        if (line3.contains(arrivalStation)){
+            sameLine(line3, startStation, arrivalStation);
+        }
         else if (line3.contains(startStation) && line1.contains(arrivalStation)) {
             getFirstWay(line3, line1, startStation, arrivalStation,
                     getIndex(line3, "nasser"), getIndex(line1, "nasser"), (byte) 1);
@@ -160,17 +169,15 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
                     getIndex(line1, "al-shohadaa"),
                     line2, getIndex(line2, "attaba"), getIndex(line2, "al-shohadaa"), (byte) -1);
         }
-
         //3 cases
         else if (line3.contains(startStation) && line2.contains(arrivalStation)) {
             getFirstWay(line3, line2, startStation, arrivalStation,
                     getIndex(line3, "attaba"), getIndex(line2, "attaba"), (byte) 1);
-            //ui
+
             getSecWay(line3, line2, startStation, arrivalStation, getIndex(line3, "nasser"),
                     getIndex(line2, "sadat"),
                     line1, getIndex(line1, "nasser"), getIndex(line1, "sadat"), (byte) -1);
         }
-
         // 3 cases
         else if (line3.contains(startStation) && branchLine3.contains(arrivalStation)) {
             getFirstWay(line3, branchLine3, startStation, arrivalStation,
@@ -181,7 +188,12 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
                     line2, getIndex(line2, "attaba"), getIndex(line2, "cairo university"), (byte) -1);
         }
 
-//        // branchLine3
+    }
+    // branchLine3
+    private void getBranchLine3(String startStation,String arrivalStation){
+        if (branchLine3.contains(arrivalStation)){
+            sameLine(branchLine3, startStation, arrivalStation);
+        }
         else if (branchLine3.contains(startStation) && line1.contains(arrivalStation)) {
             getSecWay(branchLine3, line1, startStation, arrivalStation, getIndex(branchLine3, "kit kat"),
                     getIndex(line1, "nasser"),
@@ -228,8 +240,10 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
         } else {
             binding.direction.setText("Dircetion: " + line.get(0).toUpperCase());
             List<String> subList = line.subList(arrivalIndex, startIndex + 1);
-            Collections.reverse(subList);
-            binding.route.setText("Your Route : " + subList);
+            testList.addAll(subList);
+            Collections.reverse(testList);
+            binding.route.setText("Your Route : " + testList);
+            testList.clear();
         }
         calcTimeAndCost(route, emptyList, (byte) 1);
     }
@@ -263,14 +277,17 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
             } else {
                 binding.direction.setText(" Direction: " + reversFirstDirection);
                 subList = startLine.subList(indexOfSwitchedStation1, startIndex + 1);
-                Collections.reverse(subList);
-                binding.route.setText(subList.toString());
+                testList.addAll(subList);
+                Collections.reverse(testList);
+                binding.route.setText(testList.toString());
+                testList.clear();
             }
             if (stage3 < 0) {
 
                 showViews(statusView); //0
                 binding.switchStation.setText("Then you switch at " + nameSwitchStation + " station");
-                speak(nameSwitchStation);
+//                speak(nameSwitchStation);
+                tts.speak(nameSwitchStation,TextToSpeech.QUEUE_ADD,null,null);
                 transitionsStations.add(nameSwitchStation);
                 binding.secDirection.setText("And Take : " + secDirection + " Direction");
                 subList = arrivalLine.subList(indexOfSwitchedStation2, arrivalIndex + 1);
@@ -280,12 +297,15 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
 
                 showViews(statusView); //0
                 binding.switchStation.setText("Then you switch at " + nameSwitchStation + " station");
-                speak(nameSwitchStation);
+//                speak(nameSwitchStation);
+                tts.speak(nameSwitchStation,TextToSpeech.QUEUE_ADD,null,null);
                 transitionsStations.add(nameSwitchStation);
                 binding.secDirection.setText("And Take : " + reversSecDirection + " Direction");
                 subList = arrivalLine.subList(arrivalIndex, indexOfSwitchedStation2 + 1);
-                Collections.reverse(subList);
-                binding.secRoute.setText(subList.toString());
+                testList.addAll(subList);
+                Collections.reverse(testList);
+                binding.secRoute.setText(testList.toString());
+                testList.clear();
             }
         }
         else if (statusView == -2) {
@@ -298,14 +318,16 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
             } else {
                 binding.direction2.setText(" Direction: " + reversFirstDirection);
                 subList = startLine.subList(indexOfSwitchedStation1, startIndex + 1);
-                Collections.reverse(subList);
-                binding.route2.setText(subList.toString());
+                testList.addAll(subList);
+                Collections.reverse(testList);
+                binding.route2.setText(testList.toString());
+                testList.clear();
             }
             if (stage3 < 0) {
 
                 showViews(statusView);
                 binding.switchStation2.setText("Then you switch at " + nameSwitchStation + " station");
-                speak(nameSwitchStation);
+//                speak(nameSwitchStation);
                 transitionsStations.add(nameSwitchStation);
                 binding.secDirection2.setText("And Take : " + secDirection + " Direction");
                 subList = arrivalLine.subList(indexOfSwitchedStation2, arrivalIndex + 1);
@@ -315,12 +337,14 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
 
                 showViews(statusView);
                 binding.switchStation2.setText("Then you switch at " + nameSwitchStation + " station");
-                speak(nameSwitchStation);
+//                speak(nameSwitchStation);
                 transitionsStations.add(nameSwitchStation);
                 binding.secDirection2.setText("And Take : " + reversSecDirection + " Direction");
                 subList = arrivalLine.subList(arrivalIndex, indexOfSwitchedStation2 + 1);
-                Collections.reverse(subList);
-                binding.secRoute2.setText(subList.toString());
+                testList.addAll(subList);
+                Collections.reverse(testList);
+                binding.secRoute2.setText(testList.toString());
+                testList.clear();
             }
         }
         calcTimeAndCost(route1, transitionsStations, statusView);
@@ -356,14 +380,15 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
                 binding.route2.setText(startLine.subList(startIndex, indexOfSwitchedStation1 + 1).toString());
             } else {
                 binding.direction2.setText(" Direction: " + reversFirstDirection);
-                //make start index +2 
                 subList = startLine.subList(indexOfSwitchedStation1, startIndex + 1);
-                Collections.reverse(subList);
-                binding.route2.setText(subList.toString());
+                testList.addAll(subList);
+                Collections.reverse(testList);
+                binding.route2.setText(testList.toString());
+                testList.clear();
             }
             if (stage4 < 0) {
                 binding.switchStation2.setText("Then you switch at " + nameSwitchStation + " station");
-                speak(nameSwitchStation);
+//                speak(nameSwitchStation);
                 transitionsStations.add(nameSwitchStation);
 
                 if (indexOfLinkedStation1 != -1) {
@@ -376,7 +401,7 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
                 binding.secRoute2.setText(subList.toString());
             } else {
                 binding.switchStation2.setText("Then you switch at " + nameSwitchStation + " station");
-                speak(nameSwitchStation);
+//                speak(nameSwitchStation);
                 transitionsStations.add(nameSwitchStation);
 
                 if (indexOfLinkedStation1 != -1) {
@@ -385,8 +410,10 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
                 }
                 binding.secDirection2.setText("And Take : " + reversSecDirection + " Direction");
                 subList = arrivalLine.subList(arrivalIndex, indexOfSwitchedStation2 + 1);
-                Collections.reverse(subList);
-                binding.secRoute2.setText(subList.toString());
+                testList.addAll(subList);
+                Collections.reverse(testList);
+                binding.secRoute2.setText(testList.toString());
+                testList.clear();
             }
         }
         else {
@@ -396,12 +423,14 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
             } else {
                 binding.direction.setText(" Direction: " + reversFirstDirection);
                 subList = startLine.subList(indexOfSwitchedStation1, startIndex + 1);
-                Collections.reverse(subList);
-                binding.route.setText(subList.toString());
+                testList.addAll(subList);
+                Collections.reverse(testList);
+                binding.route.setText(testList.toString());
+                testList.clear();
             }
             if (stage4 < 0) {
                 binding.switchStation.setText("Then you switch at " + nameSwitchStation + " station");
-                speak(nameSwitchStation);
+//                speak(nameSwitchStation);
                 transitionsStations.add(nameSwitchStation);
 
                 if (indexOfLinkedStation1 != -1) {
@@ -414,7 +443,7 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
                 binding.secRoute.setText(subList.toString());
             } else {
                 binding.switchStation.setText("Then you switch at " + nameSwitchStation + " station");
-                speak(nameSwitchStation);
+//                speak(nameSwitchStation);
                 transitionsStations.add(nameSwitchStation);
 
                 if (indexOfLinkedStation1 != -1) {
@@ -424,8 +453,10 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
                 }
                 binding.secDirection.setText("And Take : " + reversSecDirection + " Direction");
                 subList = arrivalLine.subList(arrivalIndex, indexOfSwitchedStation2 + 1);
-                Collections.reverse(subList);
-                binding.secRoute.setText(subList.toString());
+                testList.addAll(subList);
+                Collections.reverse(testList);
+                binding.secRoute.setText(testList.toString());
+                testList.clear();
             }
         }
 
@@ -443,7 +474,7 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
         String dircetion = lineLink.get(0);
         String reversDircetion = lineLink.get(lineLink.size() - 1);
 
-        if (statusView == 1) {
+        if (statusView == 1 || statusView ==0) {
             if (stage < 0) {
                 binding.linkDirection.setText("And take: " + reversDircetion + " Direction");
                 subList = lineLink.subList(indexOfLinkedStation1, indexOfLinkedStation2 + 1);
@@ -457,8 +488,10 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
             } else {
                 binding.linkDirection.setText("And take: " + dircetion + " Direction");
                 subList = lineLink.subList(indexOfLinkedStation2, indexOfLinkedStation1 + 1);
-                Collections.reverse(subList);
-                binding.linkRout.setText(subList.toString());
+                testList.addAll(subList);
+                Collections.reverse(testList);
+                binding.linkRout.setText(testList.toString());
+                testList.clear();
 
                 indx = (byte) (subList.size() - 1);
                 name = subList.get(indx);
@@ -479,8 +512,10 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
             } else {
                 binding.linkDirection2.setText("And take: " + dircetion + " Direction");
                 subList = lineLink.subList(indexOfLinkedStation2, indexOfLinkedStation1 + 1);
-                Collections.reverse(subList);
-                binding.linkRout2.setText(subList.toString());
+                testList.addAll(subList);
+                Collections.reverse(testList);
+                binding.linkRout2.setText(testList.toString());
+                testList.clear();
 
                 indx = (byte) (subList.size() - 1);
                 name = subList.get(indx);
@@ -496,7 +531,7 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
         byte timeMin, timeHour, reminingMin;
         byte numOfTransitionsStations = (byte) transitionsStations.size();
 
-        if (statusView == 1) {
+        if (statusView == 1 || statusView == 0) {
 
             //num of station
             binding.numStations.setText("Number of station: " + Math.abs(totalStations));
@@ -560,6 +595,14 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
             binding.switchStation.setVisibility(View.VISIBLE);
             binding.secDirection.setVisibility(View.VISIBLE);
             binding.secRoute.setVisibility(View.VISIBLE);
+
+        } else if (statusView == 0) {
+            binding.switchStation.setVisibility(View.VISIBLE);
+            binding.secDirection.setVisibility(View.VISIBLE);
+            binding.secRoute.setVisibility(View.VISIBLE);
+            binding.linkSwitch.setVisibility(View.VISIBLE);
+            binding.linkRout.setVisibility(View.VISIBLE);
+            binding.linkDirection.setVisibility(View.VISIBLE);
         } else if (statusView == -1) {
             binding.direction2.setVisibility(View.VISIBLE);
             binding.route2.setVisibility(View.VISIBLE);
@@ -585,9 +628,10 @@ public class ResultsActivity extends AppCompatActivity implements TextToSpeech.O
         return (byte) line.indexOf(station);
     }
 
-    private void speak(String switchedStation){
-        tts.speak(switchedStation,TextToSpeech.QUEUE_FLUSH,null,null);
-    }
+//    private void speak(String switchedStation){
+//        tts.speak(switchedStation,TextToSpeech.QUEUE_FLUSH,null,null);
+//    }
+    
     @Override
     public void onInit(int i) {
 
